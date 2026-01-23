@@ -10,7 +10,7 @@ Welcome to the central documentation repository for Neologik's AI platform - cov
 
 This repository contains two main documentation areas:
 
-### 👥 **For End Users**: Neo NCE Application
+### 👥 **For AI Operations**: Neo NCE Application
 Learn how to use the Neo NCE UI to manage AI agents, knowledge, and data connections.
 
 ### 🔧 **For Platform Operators**: Azure Operations
