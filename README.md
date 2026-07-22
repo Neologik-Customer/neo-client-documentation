@@ -20,7 +20,7 @@ Runbooks and procedures for operating the Neologik platform infrastructure on Az
 
 ## 👥 Neo NCE (Neologik Context Engine)
 
-**[→ View Complete NCE User Guide](./neo-nce/User-Guide.md)**
+**[→ View Complete NCE User Guide](./nce/User-Guide.md)**
 
 Comprehensive documentation for the Neo NCE UI - a modern React-based interface for managing AI agents, knowledge indexes, and data connections.
 
@@ -38,32 +38,39 @@ Comprehensive documentation for the Neo NCE UI - a modern React-based interface 
 - **Troubleshooting**: Common issues and solutions
 
 **Quick Links:**
-- [User Guide](./neo-nce/User-Guide.md)
+- [User Guide](./nce/User-Guide.md)
 
 ---
 
 ## 🔧 Platform Operations
 
-**[→ View Operations Guide](./neo-platform-operations/README.md)**
+**[→ View Operations Guide](./platform-operations/README.md)**
 
 Operational documentation for managing the Neologik AI platform on Azure. Designed for platform operators, DevOps engineers, and SREs.
 
+### Platform Reference & Resilience
+- **[Platform Architecture](./architecture/Platform-Architecture.md)** - Reference architecture, components, data stores, deployment profiles
+- **[Runbooks](./runbooks/Runbooks.md)** - Incident-response playbooks
+- **[Operational Procedures](./operational-procedures/Operational-Procedures.md)** - Routine operations, scaling, access, monitoring
+- **[Disaster Recovery Plan](./disaster-recovery/Disaster-Recovery-Plan.md)** - Strategy, RTO/RPO, scenarios, roles
+- **[Recovery Procedures](./disaster-recovery/Recovery-Procedures.md)** - Step-by-step component restores
+
 ### Infrastructure & Compute
-- **[AKS Operations](./neo-platform-operations/AKS-Operations.md)** - Kubernetes cluster management, upgrades, scaling, monitoring
-- **[Bastion](./neo-platform-operations/Bastion.md)** - Secure VM access and session monitoring
+- **[AKS Operations](./platform-operations/AKS-Operations.md)** - Kubernetes cluster management, upgrades, scaling, monitoring
+- **[Bastion](./platform-operations/Bastion.md)** - Secure VM access and session monitoring
 
 ### Networking & Security
-- **[Application Gateway & WAF](./neo-platform-operations/Application-Gateway-WAF.md)** - Load balancing, web application firewall, AGIC
-- **[Private Endpoints & DNS](./neo-platform-operations/Private-Endpoints-DNS.md)** - Private Link configuration and DNS integration
-- **[RBAC](./neo-platform-operations/RBAC.md)** - Role-based access control and permissions
+- **[Application Gateway & WAF](./platform-operations/Application-Gateway-WAF.md)** - Load balancing, web application firewall, AGIC
+- **[Private Endpoints & DNS](./platform-operations/Private-Endpoints-DNS.md)** - Private Link configuration and DNS integration
+- **[RBAC](./platform-operations/RBAC.md)** - Role-based access control and permissions
 
 ### Monitoring & Observability
-- **[Azure Monitor & Alerts](./neo-platform-operations/Azure-Monitor-Alerts.md)** - Platform monitoring, alerts, action groups
-- **[Application Insights](./neo-platform-operations/Application-Insights.md)** - Application performance monitoring (APM)
+- **[Azure Monitor & Alerts](./platform-operations/Azure-Monitor-Alerts.md)** - Platform monitoring, alerts, action groups
+- **[Application Insights](./platform-operations/Application-Insights.md)** - Application performance monitoring (APM)
 
 ### AI & Data Services
-- **[Azure AI Search](./neo-platform-operations/Azure-AI-Search.md)** - Search service operations, capacity planning, security
-- **[Azure OpenAI & Foundry](./neo-platform-operations/Azure-OpenAI-Foundry.md)** - AI service networking and configuration
+- **[Azure AI Search](./platform-operations/Azure-AI-Search.md)** - Search service operations, capacity planning, security
+- **[Azure OpenAI & Foundry](./platform-operations/Azure-OpenAI-Foundry.md)** - AI service networking and configuration
 
 ### What's Included
 - ✅ Runbook-style procedures for common tasks

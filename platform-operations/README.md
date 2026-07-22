@@ -8,6 +8,14 @@ Welcome to the Neologik Platform Operations documentation. This guide provides p
 
 This operations guide covers the key Azure services and components that power the Neologik platform:
 
+This guide covers the per-service Azure reference. For the cross-cutting
+platform docs, see:
+- **[Platform Architecture](../architecture/Platform-Architecture.md)** - reference architecture, components, data stores, deployment profiles
+- **[Runbooks](../runbooks/Runbooks.md)** - incident-response playbooks (symptom -> diagnosis -> mitigation)
+- **[Operational Procedures](../operational-procedures/Operational-Procedures.md)** - routine operations, scaling, access, monitoring
+- **[Disaster Recovery Plan](../disaster-recovery/Disaster-Recovery-Plan.md)** - strategy, RTO/RPO, scenarios, roles
+- **[Recovery Procedures](../disaster-recovery/Recovery-Procedures.md)** - step-by-step component restores
+
 ### Infrastructure & Compute
 - **[AKS Operations](./AKS-Operations.md)** - Kubernetes cluster management, upgrades, scaling, and monitoring
 - **[Bastion](./Bastion.md)** - Secure VM access and session monitoring
@@ -111,12 +119,12 @@ If you encounter issues not covered in this guide:
 
 ### Monthly
 - Review access logs and RBAC assignments
-- Verify disaster recovery procedures
+- Verify disaster recovery procedures ([backup verification](../operational-procedures/Operational-Procedures.md#op-08---backup-verification-routine))
 - Plan AKS cluster upgrades
 - Review cost optimization opportunities
 
 ### Quarterly
-- Test disaster recovery procedures
+- Test disaster recovery procedures ([DR plan](../disaster-recovery/Disaster-Recovery-Plan.md#9-testing-and-maintenance))
 - Review and update runbook documentation
 - Security audit and compliance review
 - Capacity planning and forecasting
@@ -125,11 +133,11 @@ If you encounter issues not covered in this guide:
 
 ## 📖 Additional Resources
 
-- [Neologik Client Documentation](../neo-nce/User-Guide.md) - End-user guide for the NCE UI
+- [Neologik Client Documentation](../nce/User-Guide.md) - End-user guide for the NCE UI
 - [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/)
 - [Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/)
 - [Neologik Platform Website](https://www.neologik.ai/)
 
 ---
 
-*Last Updated: January 2026*
+*Last Updated: July 2026*
