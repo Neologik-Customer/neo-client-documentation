@@ -56,7 +56,7 @@ servers**.
 | neo-database-sql | Azure SQL schema (metadata, document tracking) | Python / SQL | - |
 | neo-mcp-sql | MCP server: natural language -> SQL | Python / FastAPI / MCP | 50062 |
 | neo-mcp-document-creation | MCP server: Word doc generation | Python / FastMCP | 50068 |
-| neo-mcp-msplanner | MCP server: Microsoft Planner tasks (Graph) | Python / FastMCP | 50062 |
+| neo-mcp-etc | Any bespoke MCP solution (tailored to each client) | Varies | Varies |
 
 Ingress routing and the underlying infrastructure underpin all of the above; the
 whole environment is deployed and orchestrated by Neologik (see section 9).
