@@ -1,10 +1,5 @@
 # Neologik Platform - Operational Runbooks
 
-> **STATUS: DRAFT.** Generic incident-response runbooks. No customer identifiers.
-> Replace `<env>`, `<subId>`, `<rg>`, `<vault>` placeholders with your
-> environment's values before use. Review with your Neologik contact before
-> relying on these in a live incident.
-
 ## How to use this document
 
 A **runbook** is a set of precise, repeatable steps for a known failure mode.
@@ -12,12 +7,15 @@ Each one below follows the same shape: **Symptom / alert -> Severity ->
 Diagnosis -> Mitigation -> Verification -> Escalation**. Start with the triage
 checklist, then jump to the matching runbook.
 
-These runbooks are the cross-service **coordination layer**. Where a step needs
-resource-level detail, it links down to the relevant service guide (for example
+**These are the incident-response procedures Neologik carries out** to keep your
+environment healthy; they are shared with you for transparency, not as tasks for
+your team. Where a step needs resource-level detail, it links down to the
+relevant service guide (for example
 [AKS Operations](../platform-operations/AKS-Operations.md) or
-[Application Gateway & WAF](../platform-operations/Application-Gateway-WAF.md)). Deployments and
-releases are performed by Neologik; runbook steps that need a redeploy or
-rollback are marked as a **Neologik escalation**.
+[Application Gateway & WAF](../platform-operations/Application-Gateway-WAF.md)).
+A few steps need an action only your tenant administrators can take (for example
+granting admin consent, or providing a certificate) - those are marked
+**Customer action**.
 
 Conventions:
 - Always confirm the cluster first: `kubectl config current-context`.
@@ -60,15 +58,16 @@ startup (Redis / Cosmos / SQL / Key Vault); (c) probe port mismatch; (d)
 [AKS Operations](../platform-operations/AKS-Operations.md) for pod recovery and rollout detail.
 
 **Mitigation**
-- Bad deploy -> **Neologik escalation**: request a rollback/redeploy of the
-  last-good image (see [Operational Procedures](../operational-procedures/Operational-Procedures.md)).
-- Dependency down -> resolve that dependency first (RB-05 / RB-06).
-- Config/secret missing -> confirm the Key Vault secret and the CSI mount.
+- Bad deploy -> Neologik redeploys the last-good image (see
+  [Operational Procedures](../operational-procedures/Operational-Procedures.md)).
+- Dependency down -> Neologik resolves that dependency first (RB-05 / RB-06).
+- Config/secret missing -> Neologik confirms the Key Vault secret and the CSI
+  mount.
 
 **Verification:** pod `Running` with `0` recent restarts; `/healthz` returns 200;
 synthetic request succeeds.
 
-**Escalation:** Neologik support for any image/deploy change; persistent
+**Escalation:** within Neologik, the owning service team; persistent
 `ImagePullBackOff` -> Neologik platform/infra.
 
 ---
@@ -96,10 +95,10 @@ sign-in card loops. **Severity:** Sev1 (bot unusable for affected tenant).
    served cert (RB-03).
 
 **Mitigation**
-- Bad secret -> **Neologik escalation** to rotate the app-registration secret and
-  update both the Key Vault secret and the Bot Service OAuth connection.
-- Missing consent -> your Global Admin grants admin consent in the **signing-in
-  user's** home tenant:
+- Bad secret -> Neologik rotates the app-registration secret and updates both the
+  Key Vault secret and the Bot Service OAuth connection.
+- Missing consent -> **Customer action:** your Global Admin grants admin consent
+  in the **signing-in user's** home tenant:
   `https://login.microsoftonline.com/<userTenantId>/adminconsent?client_id=<botAppId>`
   (two-parameter form, no `redirect_uri`).
 - Missing redirect URI -> the app registration must include
@@ -108,8 +107,8 @@ sign-in card loops. **Severity:** Sev1 (bot unusable for affected tenant).
 **Verification:** Test Connection succeeds; a fresh Teams sign-in completes and
 the bot replies.
 
-**Escalation:** your identity/tenant admin for consent; Neologik support for
-secret rotation.
+**Escalation:** your identity/tenant admin for consent (Customer action); within
+Neologik for secret rotation.
 
 ---
 
@@ -120,16 +119,19 @@ probes). **Severity:** Sev1. See
 [Application Gateway & WAF](../platform-operations/Application-Gateway-WAF.md) for ingress detail.
 
 **Diagnosis**
+
+The TLS secret name depends on the ingress type: **`keyvault-neo-ingress`** on
+NGINX profiles, **`appgw-tls`** on Application Gateway (AGIC/AGC) profiles.
 ```bash
-# what cert is the ingress serving?
+# what cert is the ingress serving? (use appgw-tls on App Gateway profiles)
 kubectl get secret keyvault-neo-ingress -n neologik -o json | \
   python3 -c "import sys,json,base64;from cryptography import x509;from cryptography.hazmat.backends import default_backend;d=json.load(sys.stdin);c=x509.load_pem_x509_certificate(base64.b64decode(d['data']['tls.crt']),default_backend());print('Subject:',c.subject);print('SANs:',[str(n.value) for n in c.extensions.get_extension_for_class(x509.SubjectAlternativeName).value])"
 ```
 If the SANs do not cover the hostname (classic symptom: a self-signed
 placeholder cert), the correct cert was never bound.
 
-**Mitigation:** **Neologik escalation** - Neologik uploads the correct PFX for
-the hostname to the central PFX Key Vault and redeploys ingress. See
+**Mitigation:** Neologik uploads the correct PFX for the hostname to the central
+PFX Key Vault and redeploys ingress. See
 [Recovery Procedures](../disaster-recovery/Recovery-Procedures.md) -> restore/replace ingress
 certificate.
 
@@ -193,11 +195,9 @@ succeed.
   [Private Endpoints & DNS](../platform-operations/Private-Endpoints-DNS.md)).
 - Auth: SQL uses Entra ID (workload identity); confirm the managed identity has
   its DB role. Cosmos uses its data-plane SQL role assignment.
-- Serverless auto-pause: a serverless SQL DB resuming from pause adds first-query
-  latency - transient, not an outage.
 
-**Mitigation:** fix the missing role assignment or DNS record; for a paused DB,
-retry after resume. Never issue writes to diagnose - reads only.
+**Mitigation:** fix the missing role assignment or DNS record. Never issue writes
+to diagnose - reads only.
 
 **Verification:** a read query from the pod succeeds; app recovers.
 
@@ -224,9 +224,9 @@ bot. Consider spreading load across model deployments.
 
 **Symptom:** TLS cert within 30 days of expiry (alert), or expired (Sev1 outage).
 
-**Mitigation:** **Neologik escalation** - provide the renewed certificate to
-Neologik, who uploads the new PFX and redeploys ingress. A same-domain wildcard
-renewal needs no manifest change.
+**Mitigation:** **Customer action:** provide the renewed certificate. Neologik
+then uploads the new PFX and redeploys ingress. A same-domain wildcard renewal
+needs no manifest change.
 
 **Verification:** served cert shows the new `notAfter`.
 

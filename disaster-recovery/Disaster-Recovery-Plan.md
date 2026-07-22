@@ -1,11 +1,5 @@
 # Neologik Platform - Disaster Recovery Plan
 
-> **STATUS: DRAFT.** Generic DR plan template. RTO/RPO targets below are
-> **proposed defaults** - they must be agreed for your environment against your
-> business impact analysis and contract, and the Azure figures confirmed against
-> your deployed SKUs. No customer identifiers. Review with your Neologik contact
-> before it is adopted.
-
 ## 1. Purpose
 
 This plan defines how your Neologik platform environment is recovered after a
@@ -29,11 +23,11 @@ on the handful of **stateful stores** and on rebuilding what is derived:
 | Tier | Components | Recovery approach | Led by |
 |---|---|---|---|
 | Redeployable from code | AKS, ingress, VNet, workload identities, service pods | Re-run infrastructure + workload deploys | Neologik |
-| Must be restored | Azure SQL, Cosmos DB, Azure Storage, Key Vault | Restore from backup / soft-delete | Joint |
-| Must be rebuilt | Azure AI Search indexes | Re-run ingestion from source data | Joint |
+| Must be restored | Azure SQL, Cosmos DB, Azure Storage, Key Vault | Restore from backup / soft-delete | Neologik (customer authorises) |
+| Must be rebuilt | Azure AI Search indexes | Re-run ingestion from source data | Neologik (customer authorises) |
 | Re-pushable | Container images | Rebuild from CI, or Premium geo-replication | Neologik |
 
-## 3. Recovery objectives (proposed defaults)
+## 3. Recovery objectives
 
 RTO = maximum acceptable downtime; RPO = maximum acceptable data loss (time).
 These are **service-level building blocks**; the environment RTO is the sum of
@@ -42,8 +36,8 @@ platform, rebuild indexes).
 
 | Asset | Backup mechanism | RPO | RTO (component) | Notes |
 |---|---|---|---|---|
-| Azure SQL (config, tracking) | Automated PITR, geo-redundant storage | Geo-restore up to 1h; failover group 5s | Geo-restore < 12h; failover group ~1h | PITR retention 7d default, up to 35d |
-| Cosmos DB (chat history) | Continuous backup (PITR) | To the second, within 7 or 30 days | Minutes-hours (restore to new account) | Backups taken in every region the account exists |
+| Azure SQL (config, tracking) | Automated PITR (point-in-time restore) | Within the PITR retention window | Within-region restore: minutes-hours | Geo-restore / failover group available as options (section 7) |
+| Cosmos DB (chat history) | Continuous backup (PITR), 30-day tier | To the second, within 30 days | Minutes-hours (restore to new account) | Restored to a new account |
 | Azure Storage (blobs) | Soft-delete + versioning; GRS optional | Near-zero with versioning | Minutes | Source docs also re-transferable from SharePoint via neo-file |
 | Key Vault (secrets/certs) | Soft-delete (90d) + purge protection | Near-zero | Minutes | RBAC assignments NOT auto-restored - recreate |
 | AI Search (indexes) | **None native** | = source data currency | Hours (full re-index) | Rebuild by re-running ingestion |

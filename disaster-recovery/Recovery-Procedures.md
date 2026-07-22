@@ -1,18 +1,13 @@
 # Neologik Platform - Recovery Procedures
 
-> **STATUS: DRAFT.** Generic, step-by-step recovery procedures for individual
-> components. No customer identifiers. Replace `<env>`, `<subId>`, `<rg>`,
-> `<server>`, `<account>`, `<vault>` with your environment's values.
-> **These procedures change or restore live resources - each carries an explicit
-> authorisation gate. Get approval before running any restore against a
-> production environment, and never write to application data without it.**
-
 These are the concrete restores referenced by the [Runbooks](../runbooks/Runbooks.md) and
 sequenced by the [Disaster Recovery Plan](./Disaster-Recovery-Plan.md). Each
 follows: **When to use -> Pre-checks -> Steps -> Verify -> Post-actions.**
-Cluster and region rebuilds (RP-06) are **led by Neologik**; the remaining
-procedures can be run by your platform operators with authorisation, or jointly
-with Neologik support.
+
+**All of these procedures are carried out by Neologik**; they are shared with you
+for transparency. Two things require you: **authorisation** of any production
+restore (the gate below), and the tenant-side actions only you can perform
+(DNS updates, admin consent) - these are marked **Customer action**.
 
 ## Authorisation gate (read first)
 
@@ -45,10 +40,10 @@ fail over the **failover group** if configured.
 
 **Verify:** query the restored DB for the expected pre-incident state.
 
-**Post-actions:** validate with the data owner, then cut the app over
-(reconfigure connection / rename) under change control - coordinate with
-Neologik. Re-confirm the workload managed identity has its DB role on the
-restored database.
+**Post-actions:** once you have validated the data with the data owner, Neologik
+cuts the app over (reconfigure connection / rename) under change control and
+re-confirms the workload managed identity has its DB role on the restored
+database.
 
 ---
 
@@ -66,8 +61,8 @@ new account; you cannot overwrite in place.)
 **Verify:** the bot reads recent history from the restored account in a test
 conversation.
 
-**Post-actions:** repoint the bot config to the restored account (coordinate with
-Neologik); retain the old account until verified.
+**Post-actions:** repoint the bot config to the restored account; retain the old
+account until verified.
 
 ---
 
@@ -114,9 +109,8 @@ az keyvault certificate recover --vault-name <vault> --name <cert>     # a cert
 mounts them into pods.
 
 **Post-actions:** **recreate RBAC role assignments and Event Grid subscriptions -
-they are NOT restored automatically** when a vault is recovered. Re-grant the
-deployment SP and workload identities their Key Vault roles (coordinate with
-Neologik).
+they are NOT restored automatically** when a vault is recovered. Neologik
+re-grants the deployment SP and workload identities their Key Vault roles.
 
 ---
 
@@ -146,8 +140,8 @@ for cluster-level context.
 
 **Steps (Neologik):**
 1. Redeploy infrastructure to recreate AKS, VNet, identities.
-2. Redeploy workloads in order (redis -> database -> ingest -> file -> nce-api ->
-   bot -> nce-ui -> mcp-*).
+2. Redeploy workloads in order (redis -> database -> ingest-api -> ingest-index
+   -> file -> nce-api -> bot -> nce-ui -> mcp-*).
 3. Deploy ingress last; confirm TLS cert pull.
 
 **Verify:** all pods `Running`; health probes green; ingress routes.

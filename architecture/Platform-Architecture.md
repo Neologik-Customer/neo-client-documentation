@@ -1,11 +1,5 @@
 # Neologik Platform - Architecture
 
-> **STATUS: DRAFT.** Generic platform reference architecture. Contains no
-> customer identifiers. Before this is relied on for your environment, your
-> Neologik contact will populate the placeholders (`<customer-domain>`, `{org}`,
-> `{env}`, region) with your environment's real values and review it against
-> your deployed estate.
-
 ## 1. Purpose and scope
 
 This document describes the reference architecture of the Neologik AI platform -
@@ -151,11 +145,12 @@ must be rebuilt from source data after a loss (see
 
 ## 9. Deployment and operations model
 
-- The environment is **deployed and released by Neologik** using
-  infrastructure-as-code (Bicep) and Helm, orchestrated centrally. You operate
-  the running environment day to day (monitoring, user/access management,
-  scaling requests, recovery) with Neologik support - see
-  [Operational Procedures](../operational-procedures/Operational-Procedures.md).
+- The environment is **deployed, released and operated by Neologik** using
+  infrastructure-as-code (Bicep) and Helm, orchestrated centrally. Neologik runs
+  the environment day to day - monitoring, incident response, scaling, backups
+  and recovery. Your operational role is limited to tenant-side actions (Entra
+  permissions and group membership, admin consent, DNS, certificate supply) -
+  see [Operational Procedures](../operational-procedures/Operational-Procedures.md).
 - Two versioning models sit behind a release: container-image services deploy
   from image tags; infrastructure-style services deploy from git tags. To
   request a deployment, change or rollback, contact Neologik support.
