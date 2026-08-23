@@ -49,7 +49,7 @@ servers**.
 |---|---|---|---|
 | neo-nce-ui | Operator web app (agents, indexes, knowledge, connections) | React + Vite | 50053 |
 | neo-nce-api | Central config / CRUD API; ingestion control | Python / FastAPI | 50055 |
-| neo-bot-service | User-facing Teams / web bot; hybrid search, multi-model | Python / aiohttp + Agents SDK + Semantic Kernel | 50060 |
+| neo-bot-service | Agent runtime and channels (Teams / Copilot / web chat); hybrid search, multi-model | Python / aiohttp + Microsoft Agent Framework | 50060 |
 | neo-ingest-api | Chunk -> entity-extract -> vector-index pipeline | Python / FastAPI | 50068 |
 | neo-file | Multi-source file transfer (SharePoint / Blob) | Python / FastAPI | 50057 |
 | neo-redis-queue | Redis Streams broker (Sentinel HA) for async jobs | Redis 7 / K8s | - |
@@ -74,7 +74,7 @@ address plans are provided to you separately.
 | Network posture | Private (all PaaS on Private Endpoints) | Private (all PaaS on Private Endpoints) | Public endpoints (firewall + Entra ID / RBAC) |
 | Ingress | Application Gateway WAF_v2 (AGIC) | NGINX Ingress Controller (in-cluster) | NGINX (Web App Routing add-on) |
 | AKS API server | Private | Private | Public |
-| Bastion + jumpbox + runner VM | Yes | Yes | No |
+| Bastion + runner VM | Yes | Yes | No |
 | CI/CD runner | Self-hosted runner VM (in VNet) | Self-hosted runner VM (in VNet) | GitHub-hosted |
 | Log retention (typical) | 90 days | 90 days | 30 days |
 | Cost profile | Highest | High | Cost-optimised (AKS start/stop) |
@@ -130,8 +130,9 @@ must be rebuilt from source data after a loss (see
   access is disabled on every PaaS service. Private DNS zones resolve the
   `privatelink.*` records inside the VNet - see
   [Private Endpoints & DNS](../platform-operations/Private-Endpoints-DNS.md).
-- **Admin / ops** (Options A/B): via [Azure Bastion](../platform-operations/Bastion.md) -> jumpbox VM
-  -> private AKS API; no public management plane.
+- **Admin / ops** (Options A/B): via [Azure Bastion](../platform-operations/Bastion.md) -> runner VM
+  -> private AKS API, or `az aks command invoke` over the ARM control plane; no public
+  management plane.
 
 ## 8. Observability
 

@@ -26,15 +26,18 @@ Comprehensive documentation for the Neo NCE UI - a modern React-based interface 
 
 ### Key Topics
 
-- **Getting Started**: Authentication, navigation, dashboard overview
-- **AI Agents**: Create and configure main agents and specialized subagents
-- **Plugins & Functions**: Extend agent capabilities with custom functions
-- **Knowledge Management**: 
-  - Indexes for document search
+- **Getting Started**: Authentication, roles (Reader / Contributor / Admin), navigation
+- **AI Agents**: Create and configure agents, sub-agents and workers; models, tools,
+  connections and channels
+- **Apps & MCP**: Registered applications and the tool servers agents call
+- **Knowledge Management**:
+  - Indexes for document search, and the environment's ingest model settings
   - Document uploads and ingestion
   - SQL database connections
   - External document connections (Confluence, SharePoint, Blob Storage)
-- **Monitoring**: Agent performance and usage tracking
+- **Memory**: What agents remember, the Memory tab, and erasing a user's memory
+- **Monitoring**: Analytics and the Home platform health panel
+- **Administration**: Blueprints, the audit trail and role management (Admin role)
 - **Troubleshooting**: Common issues and solutions
 
 **Quick Links:**
