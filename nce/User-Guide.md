@@ -1,18 +1,28 @@
-# Neo NCE UI User Guide
+# Neologik Platform User Guide
+
+How to operate the Neologik Platform from its admin tool (the NCE): create agents, build
+knowledge, connect the two, give users a way in, and keep an eye on everything. Written
+against the v5 platform; every page, tab and button named below is what you will see on
+screen.
 
 ---
 
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
-2. [Dashboard Overview](#dashboard-overview)
-3. [Managing Agents](#managing-agents)
-4. [Configuring Subagents](#configuring-subagents)
-5. [Managing Plugins and Functions](#managing-plugins-and-functions)
-6. [Working with Indexes](#working-with-indexes)
-7. [Knowledge Management](#knowledge-management)
-8. [Templates and MCP](#templates-and-mcp)
-9. [Troubleshooting](#troubleshooting)
+2. [The Home Dashboard](#the-home-dashboard)
+3. [Understanding the Building Blocks](#understanding-the-building-blocks)
+4. [Managing Agents](#managing-agents)
+5. [Sub-agents](#sub-agents)
+6. [Apps and MCP Servers](#apps-and-mcp-servers)
+7. [Working with Indexes](#working-with-indexes)
+8. [Knowledge Management](#knowledge-management)
+9. [Channels: Giving Users Access](#channels-giving-users-access)
+10. [Agent Memory](#agent-memory)
+11. [Analytics](#analytics)
+12. [Administrator Surfaces](#administrator-surfaces)
+13. [Troubleshooting](#troubleshooting)
+14. [Glossary](#glossary)
 
 ---
 
@@ -20,768 +30,515 @@
 
 ### Accessing the Application
 
-1. Navigate to your Neo NCE UI URL (e.g., `https://your-domain.com/nce`)
-2. You will be redirected to the Microsoft Azure AD login page
-3. Sign in with your organizational credentials
-4. The system will verify your group membership
-5. Upon successful authentication, you'll be directed to the Home dashboard
+1. Navigate to your platform URL: `https://<your-environment-host>/nce`
+2. You are redirected to the Microsoft sign in page
+3. Sign in with your organisational credentials
+4. The platform verifies your group membership and grants your role
+5. On success you land on the Home dashboard
 
-### Authentication & Session Management
+If you see **Access denied**, your account is not in a group with platform access; contact
+your administrator. If sign in completes at Microsoft but the page shows **Sign-in failed**
+with a Try again button, retry once and then contact your administrator.
 
-- **Session Duration**: Your session can remain active indefinitely (days/weeks) as long as the refresh token is valid
-- **Token Refresh**: The application automatically refreshes your authentication token every 45 minutes
-- **Re-authentication Required When**:
-  - Your refresh token expires (typically 90 days)
-  - Conditional Access policies enforce re-authentication
-  - You explicitly log out
-  - Browser cache is cleared
+### Your Role
+
+Every user holds exactly one effective role, the highest their group memberships grant:
+
+| Role | Can | Cannot |
+|---|---|---|
+| **Admin** | Everything a Contributor can, plus the Blueprints, Audit and Admin pages | |
+| **Contributor** | Create and change all platform configuration: agents, connections, indexes, knowledge, apps, channels, loops, models | See Blueprints, Audit or Admin |
+| **Reader** | See and read everything a Contributor sees | Change anything; every save, create or delete is refused with "This operation requires the NCE contributor role" |
 
 ### Navigation
 
-The left sidebar provides access to all major sections:
+The left sidebar gives every user:
 
-- **Home** - Dashboard with statistics and overview
-- **Agents** - Manage AI agents and their configurations
-  - Each agent expands to show its Coordinator and Subagents
-- **Indexes** - Manage search indexes for knowledge retrieval
-- **Knowledge** - Document and data connection management
-  - Document Upload
-  - Data Connections (SQL databases)
-  - Document Connections (Confluence, SharePoint, Blob Storage)
-- **Logout** - Sign out of the application
+* **Home** - dashboard with statistics and the platform health panel
+* **Agents** - the agent directory and everything about each agent
+* **Apps & MCP** - registered applications and tool servers
+* **Indexes** - searchable knowledge stores, and the environment's ingest model settings
+* **Knowledge** - document upload, document connections and SQL data connections
+* **Analytics** - usage across agents
+* **Logout**
 
-**Tip**: The sidebar can be minimized by clicking the chevron icon for a more compact view.
+Administrators additionally see **Blueprints**, **Audit** and **Admin**. These appear once
+your admin role resolves after sign in.
 
 ---
 
-## Dashboard Overview
+## The Home Dashboard
 
-The Home dashboard provides a high-level overview of your system:
+Home is your situational view:
 
-### Key Metrics Displayed
+* **Activity numbers**: agents, indexes, documents, recent activity
+* **Platform health panel**: anything needing a decision surfaces here: an expiring TLS
+  certificate, expiring Key Vault secrets, **model slots with no model selected**, and
+  channels awaiting admin consent. Checks the platform cannot evaluate are named in a
+  "Checks unavailable" footnote rather than silently skipped.
+* **Shortcut cards** into the other areas.
 
-- **Total Agents**: Number of configured AI agents
-- **Active Agents**: Currently running agents
-- **Recent Activity**: Agents created this week
-- **Total Indexes**: Number of search indexes
-- **Documents**: Total indexed documents with type breakdown
-- **Storage Usage**: Total storage consumed by documents
-- **Last Activity**: Timestamp of most recent activity
+A warning such as "N model slot(s) have no model selected" counts the **environment
+level** model slots: the three ingest slots (see
+[Ingest model settings](#ingest-model-settings)) plus a slot for each platform feature in
+your environment that generates content with AI (for example an email summariser or an
+evaluation judge). The ingest slots matter immediately, because document ingestion stops
+until they are set; a feature slot matters only when that feature is used, and its
+consumer reports a clear error naming the slot until then. Per agent slots (compaction,
+loop judging) are not part of this count and are safe to leave empty.
 
-### Quick Actions
+---
 
-From the dashboard, you can quickly:
-- Navigate to any agent by clicking its card
-- Access index details
-- View recent document uploads
-- Monitor system health
+## Understanding the Building Blocks
+
+The mental model in one paragraph: you curate **content** (Indexes and Knowledge), you
+configure **behaviour** (Agents), and you grant **reach** (Channels on an agent). An agent
+with no channel is a Worker; only other agents can call it. An agent with a Teams or web
+chat channel is a user facing Agent. An agent with no knowledge attached answers only from
+its model and instructions; attach an index and it searches your documents and cites them.
+
+### Agents and their roles
+
+An **agent** is a model given a job: instructions, tools, knowledge, memory and limits.
+Every agent shows a role chip in the directory. The role is always derived, never chosen:
+
+* **Agent** - user facing: it has one or more channels (Teams, Copilot, web chat)
+* **Sub-agent** - a helper created under a parent agent; users never talk to it directly
+* **Worker** - a standalone agent with no channels, called by other agents
+
+### Apps and MCP servers
+
+An **App** is a bespoke application registered on the platform: at most one Interface (a
+web front end) plus one or more Services (business logic). An **MCP server** is a tool
+service offering typed operations that agents can call. Both appear on the Apps & MCP page.
+Neither is an agent: they are conventional software that agents may use.
+
+### Connections are deny by default
+
+No agent can call another agent, an MCP server or an app tool unless an operator has
+created a connection permitting exactly that. No connection, no access, always.
 
 ---
 
 ## Managing Agents
 
-### Understanding Agents
+### The Agents directory
 
-An **Agent** is an AI-powered entity that can:
-- Process user requests
-- Execute functions via plugins
-- Search knowledge indexes
-- Coordinate with specialized subagents
-- Generate responses based on configured instructions
+**Agents** in the sidebar shows every agent with its role chip, status badge and key
+details. Use **Create agent** (top right) to add one.
 
-### Viewing All Agents
+### Creating an agent
 
-1. Click **Agents** in the left sidebar
-2. View the agents page showing:
-   - Statistics cards (Total, Active, Recent)
-   - Grid of agent cards with key information
+One form, one required field:
 
-### Viewing Agent Details
+| Field | Required | Notes |
+|---|---|---|
+| Name | yes | The display name users will see |
+| Description | no | Shows on the directory and the agent's Overview |
+| Data Classification | no | General / Confidential / Restricted (default General). Gates what the agent may connect to; downgrading later needs explicit confirmation |
+| Parent Agent | no | Set a parent to create a Sub-agent. Leave "No parent" for a normal agent |
+| Memory Scope | no | "Own" (its own memory partition) or "Inherit parent" (shares the parent's memory pool; needs a parent) |
+| Model Deployment | no | The model it runs on, picked from the deployments that exist on your environment's Azure AI Foundry account. Use **Refresh models** after a new model is deployed in Azure. Can be set later on the Configuration tab |
+| Max Input / Output / Search Tokens | no | Starting token budgets; fine to leave empty and tune later |
 
-1. From the Agents page, click **View Details** on any agent card
-2. The agent detail page displays:
-   - **Agent Overview**: Name, description, model configuration
-   - **Tabbed Interface**: Access to different configuration areas
+Click **Create Agent**. You land on the agent's detail page, which refreshes itself while
+provisioning runs; the status badge walks from Pending or Deploying to **Active**, usually
+within a few minutes. A failed setup shows **Retry provisioning** in the header.
 
-### Agent Configuration Tabs
+Two things people expect to set but do not:
 
-#### Overview Section
+* **There is no role field.** Every agent starts as a Worker. Attach a channel and it
+  becomes a user facing Agent; create it with a parent and it is a Sub-agent.
+* **Instructions are not on the create form.** Set them after creation on the Instructions
+  tab.
 
-The overview card shows:
-- **Agent Name**: Identifier for the agent
-- **Description**: Purpose and capabilities
-- **Welcome Message**: Initial greeting to users
-- **Model Configuration**:
-  - Model (e.g., gpt-4o, o1-mini)
-  - Deployment name
-  - Temperature (0.00 to 2.00)
-  - Reasoning Level (for o1 models: minimal, low, medium, high)
-- **Token Limits**:
-  - Max Input Tokens
-  - Max Output Tokens
-  - Max Search Tokens
-- **Created Date**: When the agent was created
+**Creating an agent with no model:** the platform accepts it and defers provisioning with a
+clear reason and an unset model badge rather than creating a broken agent. Pick a model on
+the Configuration tab to release it.
 
-**Actions Available**:
-- **Edit Configuration**: Click the edit button to modify agent settings
-- **Restart Workload**: Restart the agent's pod (for applying changes)
+### The agent detail page
 
-### Editing Agent Configuration
+Up to eleven tabs, depending on the agent's role and connections: **Overview,
+Configuration, Instructions, Tools, Connections, Channels, Access, Knowledge, Memory,
+Document Templates, Loops**. Channels, Access, Knowledge, Memory and Loops belong to user
+facing agents, so sub-agents do not show them. Document Templates appears on any agent
+connected to the document creation tool.
 
-1. Click the **Edit** button (pencil icon) in the Agent Overview
-2. The Edit Configuration modal opens with fields:
-   - **Description**: Update the agent's purpose
-   - **Welcome Message**: Customize the greeting message
-   - **Model**: Select from available AI models
-   - **Deployment**: Choose the deployment endpoint
-   - **Temperature**: Adjust creativity (0.00-2.00)
-     - Lower values (0.0-0.5): More focused and deterministic
-     - Higher values (0.5-2.0): More creative and varied
-   - **Max Input Tokens**: Maximum tokens for input context
-   - **Max Output Tokens**: Maximum tokens for responses
-   - **Max Search Tokens**: Maximum tokens for search results
-3. Click **Save** to apply changes
-4. Consider restarting the agent workload for changes to take effect
+#### Overview
 
-### Editing Agent Instructions
+Name, description, status, role, hierarchy (parent and children), and the headline
+configuration. **Restart workload** in the header restarts the agent's runtime; some
+changes note that they apply on the next restart.
 
-1. Navigate to the **Instructions** tab
-2. Click the **Edit** button
-3. Modify the system instructions that guide the agent's behavior
-4. Instructions should include:
-   - Agent's role and purpose
-   - Behavioral guidelines
-   - Response format preferences
-   - Constraints and limitations
-5. Click **Save** to apply changes
+#### Configuration
 
-**Best Practice**: Be specific and clear in instructions. Include examples of desired behavior when possible.
+* **Model Deployment**: a dropdown of the models actually deployed on your environment's
+  Foundry account, never free text, with a **Refresh models** link that re-queries Azure
+  live. The selector names the account it draws from.
+* **Temperature** (standard models) or **Reasoning level** (reasoning models).
+* **Token budgets**: Max Input, Max Output and Max Search Tokens.
+* **Model Slots**: optional cheaper models for background work (conversation compaction,
+  loop judging, memory extraction). Unset means the work runs on the agent's own model,
+  which is a valid configuration.
+* **Search Tuning**: how knowledge search behaves for this agent. Defaults suit most cases.
 
----
+Sensible values are set when your environment is built. Tune only when you see a symptom.
 
-## Configuring Subagents
+#### Instructions
 
-### What are Subagents?
+* **Agent Instructions**: the system prompt - who the agent is, what it does, tone, what it
+  must not do. Markdown supported.
+* **Welcome Message**: the greeting users get on a new conversation.
 
-**Subagents** are specialized AI agents that work under a main agent (Coordinator) to handle specific tasks or domains. The Coordinator can delegate work to subagents based on the user's request.
+Be specific and clear. Include examples of desired behaviour where possible.
 
-### Understanding the Agent Hierarchy
+#### Tools
 
-- **Coordinator**: The main agent that receives user requests and coordinates responses
-- **Subagents**: Specialized agents for specific tasks (e.g., code generation, data analysis)
+Built in platform capabilities switched on per agent: document search, memory, web search
+and others. Enable only what the agent needs; every enabled tool costs the agent attention
+and tokens.
 
-### Viewing Subagents
+#### Connections
 
-1. Navigate to an agent's detail page
-2. Click the **Subagents** tab
-3. View the list of subagents with:
-   - Name
-   - Foundry Deployment
-   - Model Settings (Temperature or Reasoning Level)
-   - Token Limits (Input/Output/Search)
-   - Created Date
+The agent's permissions to call other agents, MCP servers and app tools. Deny by default:
+create a connection to grant access, remove it to revoke. Each connection names exactly one
+target.
 
-**Note**: The Coordinator is not listed here as it's the parent agent.
+#### Access
 
-### Creating a Subagent
+The agent's identity and access contract, shared by all its channels: the **user groups**
+whose members may use the agent (with an optional All users switch), and the **sign in
+permission packs** the agent requests when users sign in. Changes to packs are applied
+from the channel cards, where re-provisioning and admin consent happen.
 
-1. On the Subagents tab, click **Create Subagent**
-2. Fill in the required fields:
-   - **Name**: Unique identifier (must follow Python function naming rules)
-     - Start with a letter or underscore
-     - Only letters, numbers, and underscores
-     - Cannot be "coordinator" (reserved)
-     - Cannot be a Python keyword
-   - **Description**: Purpose of the subagent
-   - **Instructions**: Detailed guidelines for this subagent's behavior
-   - **Deployment**: Select the AI model deployment
-   - **Model Settings**:
-     - For standard models: Set Temperature (0.00-2.00)
-     - For reasoning models (o1): Set Reasoning Level (minimal, low, medium, high)
-   - **Token Limits**:
-     - Max Input Tokens
-     - Max Output Tokens
-     - Max Search Tokens (optional)
-3. Click **Create** to save the subagent
+#### Knowledge
 
-**Naming Best Practices**:
-- Use descriptive names: `code_reviewer`, `data_analyst`, `content_writer`
-- Keep names concise but meaningful
-- Use lowercase with underscores for readability
+* **Attach index**: the agent's search now covers that index and answers ground themselves
+  in the indexed content with citations. Several indexes can be attached; detaching is the
+  same place.
+* If the attach toast says database access lands on the agent's next deployment, use
+  **Restart workload** to apply it immediately.
+* **SQL data connections**: associate a registered database connection here to let the
+  agent answer questions from structured data (natural language to SQL).
 
-### Editing a Subagent
+#### Channels, Memory, Document Templates, Loops
 
-#### Viewing Subagent Details
+Covered in their own sections: [Channels](#channels-giving-users-access),
+[Agent Memory](#agent-memory). Document Templates manages the templates the document
+creation tool fills for this agent. Loops are recurring, evaluated agent tasks with
+approval gates; your administrator will advise if your solution uses them.
 
-1. Click on a subagent name in the navigation sidebar (under the agent)
-   - Or navigate to `/agents/{agentId}/subagent/{subagentId}`
-2. View the subagent overview and configuration
+### Deleting an agent
 
-#### Editing Subagent Configuration
-
-1. On the subagent detail page, click **Edit** in the overview section
-2. Modify any of the following:
-   - Description
-   - Instructions
-   - Deployment
-   - Temperature or Reasoning Level
-   - Token limits
-3. Click **Save**
-
-**Important**: Changing the deployment may require restarting the agent workload.
-
-### Deleting a Subagent
-
-1. On the Subagents tab, find the subagent you want to remove
-2. Click the **Delete** button (trash icon)
-3. Confirm the deletion in the dialog
-4. The subagent is permanently removed
-
-**Warning**: This action cannot be undone. Ensure the subagent is no longer needed before deleting.
-
-### Managing Subagent Plugins
-
-Each subagent can have its own set of plugins and functions:
-
-1. Navigate to the subagent detail page
-2. Click the **Plugins** tab
-3. Follow the same process as agent plugins (see [Managing Plugins](#managing-plugins-and-functions))
+Open the agent and use the delete action in the header. Deletion asks for confirmation and
+removes the agent's full footprint: its runtime, identity, permissions, routing and
+configuration. The audit trail keeps the record of the deletion.
 
 ---
 
-## Managing Plugins and Functions
+## Sub-agents
 
-### What are Plugins?
+A sub-agent is one of an agent's skills, with its own instructions, model choice and
+tools. Users never talk to it; its parent calls it.
 
-**Plugins** extend agent capabilities by providing functions that can:
-- Query databases
-- Call external APIs
-- Process data
-- Perform calculations
-- Access external systems
+* **Create**: use **Create child agent** on the parent's Overview tab (Hierarchy card); it
+  opens the create form with the parent pre-selected. Or set a Parent Agent on the normal
+  create form.
+* **Memory scope**: a sub-agent either keeps its own memory partition or inherits its
+  parent's pool; chosen at creation.
+* **Configure**: same tabs as any agent, minus Channels, Access, Knowledge, Memory and
+  Loops.
+* **Delete**: same as any agent, from its detail page.
 
-Each plugin contains one or more **functions** that the agent can invoke.
+---
 
-### Viewing Agent Plugins
+## Apps and MCP Servers
 
-1. Navigate to an agent detail page
-2. Click the **Plugins** tab
-3. View the list of available plugins
+The **Apps & MCP** page lists the bespoke applications and tool servers registered in your
+environment, each with a status badge, its components (Interface and Services) and version.
 
-### Expanding Plugin Details
+* Apps are provisioned by the platform the same zero hands way agents are: identity,
+  permissions and routing are created automatically.
+* An app that generates content with AI has its own **model setting** in the app's
+  editor. If it is unset the app reports a clear configuration error when asked to
+  generate.
+* An app may expose tools to agents through its own MCP server. Agents still need a
+  connection to use them.
 
-1. Click on a plugin row to expand it
-2. View all functions within that plugin
-3. Each function shows:
-   - Function name
-   - Description
-   - Active/Inactive status
-
-### Activating/Deactivating Plugins
-
-**To toggle an entire plugin**:
-1. Locate the plugin in the list
-2. Click the **toggle switch** on the right side of the plugin row
-3. Green = Active (agent can use this plugin)
-4. Gray = Inactive (plugin is disabled)
-
-**Effect**: When you deactivate a plugin, all its functions are also deactivated.
-
-### Activating/Deactivating Functions
-
-**To toggle individual functions**:
-1. Expand a plugin by clicking on it
-2. Locate the specific function
-3. Click the **toggle switch** next to the function
-4. Green = Active, Gray = Inactive
-
-**Best Practice**: Only enable functions that the agent needs to reduce token usage and improve performance.
-
-### Editing Plugin Descriptions
-
-1. Expand a plugin to view its details
-2. Click the **Edit** button (pencil icon) next to the description
-3. The description field becomes editable
-4. Modify the description to clarify the plugin's purpose
-5. Click the **Check** button to save or **X** to cancel
-
-### Editing Function Descriptions
-
-1. Expand a plugin and locate the function
-2. Click the **Edit** button next to the function description
-3. Update the description
-4. Click **Check** to save or **X** to cancel
-
-**Why edit descriptions?** Clear descriptions help the AI agent understand when and how to use each function effectively.
+Most day to day operation of apps is done inside the app itself; this page is where you
+check status, versions and model configuration.
 
 ---
 
 ## Working with Indexes
 
-### What are Indexes?
+### What an index is
 
-**Indexes** are search-enabled knowledge bases that allow agents to:
-- Retrieve relevant information from documents
-- Answer questions based on uploaded content
-- Provide contextual responses with citations
+A searchable knowledge store: one Azure AI Search index plus a storage container,
+provisioned as a pair. Agents attached to an index can retrieve relevant passages and cite
+them in answers.
 
-### Viewing All Indexes
+### Creating an index
 
-1. Click **Indexes** in the left sidebar
-2. View the indexes page showing:
-   - Total Indexes count
-   - Total Documents count
-   - Storage usage
-   - List of all indexes with statistics
+**Indexes** -> **Create index**:
 
-### Creating an Index
+| Field | Required | Notes |
+|---|---|---|
+| Name | yes | e.g. "Product Documentation". The Azure resource name is derived from it and previewed in the dialog |
+| Description | yes | What this index is for |
+| Top results | yes | Maximum results returned per query; the default is fine |
+| Chunking type | yes | See below |
+| Image description model | Conceptual only, optional | Leave as **Environment default** to use the shared image description model; an override picks from the Content Understanding catalogue |
 
-**Note**: Index creation may be restricted based on your permissions. Contact your administrator if the Create Index button is not available.
+Chunking type decides how documents are broken up and enriched:
 
-### Viewing Index Details
+* **Conceptual (recommended)**: semantic chunks, tables, OCR, page accurate citations.
+* **Standard**: fixed size chunks, images described, lower cost.
+* **Basic**: text only, near zero cost.
 
-1. From the Indexes page, click on an index name or "View Details"
-2. The index detail page opens with several tabs:
-   - **Configuration**: Index settings
-   - **Files**: Manage documents in the index
-   - **Image Extraction**: Configure image-to-text processing
-   - **Connections**: Automated data connections
+Chunk size, image descriptions and classification rules can be adjusted later on the
+index's **Ingestion** tab. Changes apply to files ingested from then on; already indexed
+content keeps its chunks until re-ingested.
 
-### Index Configuration Tab
+### Ingest model settings
 
-#### Viewing Index Settings
+At the bottom of the Indexes page, the **Ingest Models** section holds three environment
+wide model slots (the "Ingest models" tile at the top of the page scrolls to it and turns
+red when any is unset):
 
-The Configuration tab displays:
-- **Index Name**: Unique identifier
-- **Description**: Purpose of the index
-- **Search Service**: Azure AI Search service name
-- **Storage Account**: Azure storage location
-- **Chunking Style**: How documents are split
-- **Top Results**: Number of results to return in searches
-- **Language Extract Settings**:
-  - Instructions for text extraction
-  - Examples for the extraction model
-  - Model used for extraction
-- **Vision Model**: Model for image processing
+| Slot | While unset |
+|---|---|
+| Embeddings | Document ingestion and agent knowledge search fail with an error naming the slot |
+| Ingest enrichment | Chunk classification during ingestion fails (Conceptual and Standard chunking; Basic does no enrichment) |
+| Image description | Conceptual ingestion with image descriptions on fails, unless the index has its own override |
 
-#### Editing Index Configuration
+These fail fast **by design**: a silent fallback to the wrong model would be worse. Set
+each from its dropdown of actually deployed models. Agent conversations keep working while
+they are unset; agent memory falls back to keyword retrieval so a half configured
+environment never breaks chats.
 
-1. Click the **Edit** button in the configuration section
-2. Modify available fields:
-   - Description
-   - Language extraction instructions and examples
-   - Image-to-text prompt
-   - Image-to-text max tokens
-   - Top results count
-3. Click **Save** to apply changes
+### Managing files in an index
 
-### Managing Index Files
+The index's **Files** tab lists every document with size, status and dates.
 
-#### Viewing Files
+* **Statuses**: Draft (uploaded, not processed), Ingesting, Indexed (searchable, shows a
+  chunk count), Failed.
+* New uploads are picked up automatically within a few minutes, or press **Ingest all
+  files** (or select rows and **Ingest selected**) to start straight away. While it runs
+  the tab shows "Ingestion in progress: X of Y files processed" and refreshes itself.
+* Delete files by selecting rows and confirming; deleted files cannot be recovered.
 
-1. Navigate to the **Files** tab
-2. View all documents in the index with:
-   - File name
-   - File size
-   - Status (Draft, Ingesting, Indexed, Failed)
-   - Last modified date
-   - Last ingested date
+### Deleting an index
 
-#### Uploading Files to an Index
-
-1. On the Files tab, click **Upload Files**
-2. Click **Choose Files** or drag and drop files
-3. Select one or multiple files to upload
-4. Supported formats include:
-   - Documents: PDF, DOCX, XLSX, PPTX, TXT
-   - Images: JPG, PNG, GIF
-   - Other formats (check with your administrator)
-5. Click **Upload** to begin the upload
-6. Monitor upload progress via the progress bar
-7. Files appear in the list with "Draft" status
-
-**Note**: All file types are now accepted. The system will process supported formats.
-
-#### Ingesting Files
-
-After uploading, files must be **ingested** to be searchable:
-
-**To ingest all files**:
-1. Click the **Ingest All Files** button
-2. Confirm the action
-3. File statuses change to "Ingesting"
-4. Wait for status to change to "Indexed"
-
-**To ingest selected files**:
-1. Check the boxes next to specific files
-2. Click **Ingest Selected** button
-3. Confirm the action
-4. Selected files begin processing
-
-**Ingestion Status**:
-- **Draft**: Uploaded but not processed
-- **Ingesting**: Currently being processed
-- **Indexed**: Successfully processed and searchable
-- **Failed**: Processing error occurred
-
-#### Deleting Files
-
-**To delete files**:
-1. Select files by checking their boxes
-2. Click the **Delete** button (trash icon)
-3. Confirm the deletion
-4. Files are permanently removed from the index
-
-**Warning**: Deleted files cannot be recovered. Ensure backups exist if needed.
-
-#### Restarting Index Workload
-
-If files are stuck in "Ingesting" status or the index is unresponsive:
-1. Click the **Restart** button in the index overview
-2. Confirm the restart
-3. The index processing pod restarts
-4. Processing resumes after restart
-
-### Image Extraction Configuration
-
-1. Navigate to the **Image Extraction** tab
-2. Configure settings for extracting text from images:
-   - **Image-to-Text Prompt**: Instructions for the vision model
-   - **Max Tokens**: Maximum tokens for image processing (limits cost)
-3. Click **Save** to apply changes
-
-**Use Case**: When your documents contain important diagrams, charts, or images with text.
-
-### Assigning Indexes to Agents
-
-#### Viewing Agent Indexes
-
-1. Navigate to an agent detail page
-2. Click the **Indexes** tab
-3. View currently connected indexes
-
-#### Connecting an Index
-
-1. On the Indexes tab, click **Connect Index**
-2. A modal opens showing available indexes
-3. Select an index from the dropdown
-4. Click **Connect**
-5. The index appears in the agent's index list
-
-**Effect**: The agent can now search this index to retrieve relevant information.
-
-#### Disconnecting an Index
-
-1. Locate the index in the agent's index list
-2. Click the **Disconnect** button
-3. Confirm the action
-4. The agent can no longer access this index
+Open the index and use **Delete index** (top right). Deletion is permanent: documents,
+search index, storage container and configuration all go. Agents that used the index lose
+it as a knowledge source.
 
 ---
 
 ## Knowledge Management
 
-The Knowledge section provides tools for managing documents and data connections.
-
 ### Document Upload
 
-#### Uploading Documents (General)
+**Knowledge** -> **Document Upload** (or the **Upload documents** link on an index's empty
+Files tab, which pre-selects the index):
 
-1. Click **Knowledge** → **Document Upload** in the sidebar
-2. Click **Choose Files** or drag-and-drop files
-3. Select one or multiple files
-4. Click **Upload**
-5. Monitor upload progress
-6. Files are stored and ready for index assignment
+1. Pick the **Target index**
+2. Drag files onto the dropzone or **Browse files** (multiple at once)
+3. Click **Upload N file(s)** and watch the queue (Queued -> Uploaded)
 
-**Note**: Documents uploaded here are not automatically indexed. Assign them to an index for searchability.
-
-### Data Connections (SQL Databases)
-
-Data Connections allow agents to query SQL databases directly.
-
-#### Viewing Data Connections
-
-1. Click **Knowledge** → **Data Connections**
-2. View all configured SQL connections with:
-   - Connection name
-   - SQL endpoint
-   - Database name
-   - Authentication type
-   - Created date
-
-#### Creating a SQL Connection
-
-1. Click **Create Connection**
-2. Fill in the connection details:
-   - **SQL Endpoint**: Server address (e.g., `server.database.windows.net`)
-   - **Database Name**: Target database
-   - **Authentication Type**:
-     - **Managed Identity (MI)**: Uses Azure Managed Identity (recommended)
-     - **Connection String (CS)**: Uses explicit credentials
-   - **Connection String** (if CS selected): Full connection string
-   - **Description**: Optional notes about the connection
-   - **Data Dictionary**: Optional schema information to help the AI understand the database structure
-3. Click **Test Connection** to verify connectivity
-4. If successful, click **Create**
-
-**Best Practice**: Use Managed Identity authentication for enhanced security.
-
-#### Testing a Connection
-
-1. Locate the connection in the list
-2. Click the **Test** button
-3. View test results:
-   - Success: Connection is valid
-   - Failure: Review error message and check credentials/network
-
-#### Editing a Connection
-
-1. Click the **Edit** button on a connection
-2. Modify available fields:
-   - Description
-   - SQL Endpoint
-   - Connection String (if applicable)
-   - Data Dictionary
-3. Click **Save**
-
-**Note**: Some fields like Database Name and Auth Type cannot be changed after creation.
-
-#### Deleting a Connection
-
-1. Click the **Delete** button on a connection
-2. Confirm the deletion
-3. The connection is removed
-
-**Warning**: Agents using this connection will lose access to the database.
+Uploading stores the files; indexing follows automatically or from the index's Files tab.
+Supported formats include PDF, Word, Excel, PowerPoint, text and common image formats.
 
 ### Document Connections
 
-Document Connections enable automatic synchronization of documents from external sources.
+**Knowledge** -> **Document Connections** syncs documents from external sources. Every
+connection targets exactly one index.
 
-#### Viewing Document Connections
+* **Source types**: SharePoint, Blob Storage, Confluence.
+* Each type asks for its own details and credentials; secrets are stored in Azure Key
+  Vault and never shown again.
+* SharePoint and Confluence connections have an **Auto-ingest** toggle so new and updated
+  documents flow in automatically; SharePoint rows also offer **Sync now** for an
+  immediate pull.
+* Optional filters (subfolder paths, label filters, space keys) narrow what is synced.
 
-1. Click **Knowledge** → **Document Connections**
-2. View all configured connections with:
-   - Connection name
-   - Type (Confluence, SharePoint, Blob Storage)
-   - Connected index
-   - Status
-   - Last synced date
+### Data Connections (SQL)
 
-#### Creating a Document Connection
+**Knowledge** -> **Data Connections** registers databases that agents may query with
+natural language:
 
-**Connection Types**:
-- **Confluence**: Sync Confluence spaces and pages
-- **SharePoint**: Sync SharePoint sites and documents
-- **Blob Storage**: Sync Azure Blob containers
+* **SQL endpoint** and **database name**
+* **Authentication**: Managed Identity (recommended) or connection string
+* An optional **data dictionary** describing the schema, which markedly improves the
+  quality of generated queries
+* **Test Connection** before saving
 
-**General Steps**:
-1. Click **Create Connection**
-2. Select connection type
-3. Enter configuration details (specific to each type)
-4. Assign to an index
-5. Click **Create**
-
-#### Confluence Connection
-
-Required fields:
-- **Name**: Connection identifier
-- **Description**: Purpose of the connection
-- **Base URL**: Confluence instance URL
-- **Space Keys**: Comma-separated list of spaces to sync
-- **User Email**: Confluence user email
-- **Token Secret Name**: Azure Key Vault secret containing API token
-- **Index**: Target index for documents
-
-Optional filters:
-- **Timeframe**: Only sync pages modified in the last X months
-- **Label Filter**: Only sync pages with specific labels
-
-#### SharePoint Connection
-
-Required fields:
-- **Name**: Connection identifier
-- **Description**: Purpose
-- **SharePoint URL**: Site URL
-- **Client ID**: Azure AD application ID
-- **Tenant ID**: Azure AD tenant ID
-- **Token Secret Name**: Key Vault secret for access token
-- **Index**: Target index
-
-#### Blob Storage Connection
-
-Required fields:
-- **Name**: Connection identifier
-- **Description**: Purpose
-- **Storage URL**: Azure Storage account URL
-- **Container Name**: Blob container name
-- **SAS Token Secret Name**: Key Vault secret with SAS token
-- **Index**: Target index
-
-#### Syncing Connections
-
-1. Locate the connection in the list
-2. Click the **Sync Now** button
-3. The system fetches and ingests new/updated documents
-4. Monitor the "Last Synced" timestamp
-
-**Automatic Syncing**: Connections may sync automatically on a schedule (check with administrator).
-
-#### Editing/Deleting Connections
-
-Similar to SQL connections:
-1. Click **Edit** to modify configuration
-2. Click **Delete** to remove the connection
+Registering a connection grants nothing by itself: associate it with an agent on that
+agent's Knowledge tab.
 
 ---
 
-## Templates and MCP
+## Channels: Giving Users Access
 
-### Templates Tab
+Until it has a channel, an agent is a Worker; nothing user facing exists. Open the agent
+-> **Channels** tab -> **Attach channel** (the agent must be Active first).
 
-Templates define structured data extraction workflows.
+### Microsoft Teams
 
-#### Viewing Templates
+Always signed in. After provisioning:
 
-1. Navigate to an agent detail page
-2. Click the **Templates** tab
-3. View configured templates for this agent
+1. A tenant Global Administrator must approve consent; the channel card carries the
+   consent URL with Copy and Open buttons and a **Verify consent** flow.
+2. Assign at least one **user group** on the agent's **Access** tab; members of the
+   assigned Entra security groups are who can use the agent. No group, no access; that is
+   the "Awaiting user group" state.
+3. Generate the Teams app package from the card (**Teams app package** button) and upload
+   it in the Teams admin centre. Once installed, the app is available in both Microsoft
+   Teams and Microsoft 365 Copilot.
 
-**Note**: Template functionality may be limited based on your agent's configuration.
+The amber "awaiting" states on the card are tasks for you, not failures.
 
-### MCP (Model Context Protocol) Tab
+### Web chat
 
-The MCP tab manages external context providers.
+* **Signed in** web chat needs a user group, like Teams.
+* **Anonymous** web chat is open to anyone with the link. The channel card offers a
+  **Preview** button to try the chat without leaving the page.
 
-#### Understanding MCP
+### Session commands
 
-MCP allows agents to access external data sources and tools through a standardized protocol.
+In any chat, users can send `/clear` to clear the current session (the reply starts
+"Session cleared." and confirms the history was reset), and `login`, `logout` and `me` are
+handled by the platform directly.
 
-#### Viewing MCP Connections
+---
 
-1. Navigate to an agent detail page
-2. Click the **MCP** tab
-3. View configured MCP providers
+## Agent Memory
 
-**Note**: MCP configuration is an advanced feature. Consult your administrator for setup.
+An agent remembers in three layers: the current conversation (short term), episodes (one
+short summary per past conversation, expiring automatically), and a durable knowledge
+graph of facts. Facts stay until contradicted, deleted, or the user is forgotten.
+
+* Every memory entry is either **shared** (organisational knowledge any user of the agent
+  may benefit from) or **private to one user**. Private memory is never shown to other
+  users.
+* **Consolidation** runs in the background shortly after a conversation goes quiet,
+  distilling anything durable. It is on by default.
+* The agent's **Memory tab** lets operators inspect what the agent has learned, correct or
+  delete individual entries, and erase a user's memory entirely. Erasure asks for
+  confirmation and is permanent; it supports right to be forgotten requests.
+
+---
+
+## Analytics
+
+**Analytics** in the sidebar shows conversations, active users, token usage and tool
+calls, filterable per agent and time range, with a per agent breakdown table and CSV
+export. Data appears shortly after activity; a brand new agent shows once it has traffic.
+
+---
+
+## Administrator Surfaces
+
+Visible to Admins only.
+
+### Blueprints
+
+Install packaged capabilities into the environment (a blueprint registers and provisions a
+component in one step) and export an agent as an anonymised blueprint file for reuse.
+Exported blueprints contain configuration only: no secrets, identities or environment
+specific values.
+
+### Audit
+
+Every configuration change on the platform is recorded: who, what, when. The trail is
+append only; entries cannot be edited or removed, and the page offers integrity
+verification. Deletions of agents and other objects remain on the trail after the object
+is gone.
+
+### Admin
+
+Role management: the Entra security groups (and optional "All users" switch) behind the
+Reader, Contributor and Admin roles. Groups show a **Verified** chip once the platform has
+confirmed them in Entra using your signed in session; a mistyped group is refused on the
+spot. Note that a role group must be assigned to the environment's Neologik Platform
+Sign-in enterprise application by your Entra administrator, or its members will not get
+access.
 
 ---
 
 ## Troubleshooting
 
-### Common Issues and Solutions
+#### "I uploaded files but the agent doesn't know them"
 
-#### "Failed to load agents/indexes"
+Check the three links in the chain:
 
-**Cause**: Network issue or API unavailable  
-**Solution**:
-1. Refresh the page
-2. Check your network connection
-3. Contact your administrator if the issue persists
+1. The files show as **Indexed** with a chunk count on the index's Files tab
+2. The index is attached on the agent's Knowledge tab
+3. The agent was restarted if the attach toast said access lands on next deploy
 
-#### Files Stuck in "Ingesting" Status
+#### Files stuck in "Ingesting"
 
-**Cause**: Processing error or workload issue  
-**Solution**:
-1. Wait 5-10 minutes (large files take time)
-2. Click the **Restart** button on the index
-3. If the issue persists, delete and re-upload the file
+Large files take time; wait several minutes first. Check the Home health panel for failed
+indexing. If the environment's embeddings or enrichment model slot is unset, ingestion
+fails with an error naming the slot; set the slot and re-ingest.
 
-#### "Token expired" or Unexpected Logout
+#### "The Attach channel button is greyed out"
 
-**Cause**: Session timeout or authentication issue  
-**Solution**:
-1. Log back in
-2. If the issue repeats, clear browser cache
-3. Contact your administrator if problems continue
+The agent must be Active with a provisioned workload first. Watch the status badge, or use
+Retry provisioning if it failed.
 
-#### Plugin/Function Toggle Not Working
+#### "N model slot(s) have no model selected" on Home
 
-**Cause**: Temporary connection issue  
-**Solution**:
-1. Refresh the page
-2. Try toggling again
-3. Verify the change persisted by refreshing
+See [Ingest model settings](#ingest-model-settings) for the slots that matter
+immediately and what each does while unset. Feature slots (such as an email summariser or
+evaluation judge) matter only when that feature is used. Per agent slots on the
+Configuration tab are not part of this count and are safe to leave empty.
 
-#### Cannot Upload Files
+#### An agent's answers cite nothing
 
-**Cause**: File size limit or unsupported format  
-**Solution**:
-1. Check file size (large files may timeout)
-2. Try uploading smaller batches
-3. Contact administrator for file size limits
+The agent has no index attached, the index has no indexed files, or its instructions do
+not ask it to ground answers. Check the Knowledge tab first.
 
-#### Subagent Name Validation Error
+#### "Access denied" or missing sidebar items
 
-**Cause**: Invalid Python function name  
-**Solution**:
-- Use only letters, numbers, and underscores
-- Start with a letter or underscore
-- Avoid Python keywords (if, for, while, etc.)
-- Don't use "coordinator" (reserved)
+Your role comes from group membership. Blueprints, Audit and Admin require the Admin role.
+If a colleague sees pages you do not, compare roles with your administrator.
 
-### Getting Help
+#### Changes refused with "requires the NCE contributor role"
 
-If you encounter issues not covered in this guide:
+You hold the Reader role. Ask your administrator for Contributor if you need to make
+changes.
 
-1. **Check the logs**: Look for error messages on the page
-2. **Refresh the browser**: Many issues resolve with a refresh
-3. **Contact your administrator**: Provide error messages and steps to reproduce
-4. **Check Azure Status**: Some issues may be related to Azure service availability
+### Getting help
 
----
-
-## Best Practices
-
-### Agent Configuration
-
-1. **Be specific in instructions**: Clear, detailed instructions yield better results
-2. **Use appropriate temperature settings**:
-   - Creative tasks: 0.7-1.0
-   - Factual tasks: 0.0-0.3
-   - Balanced: 0.5
-3. **Set reasonable token limits**: Balance between response quality and cost
-4. **Test changes gradually**: Modify one setting at a time to understand impact
-
-### Plugin Management
-
-1. **Enable only necessary plugins**: Reduces token usage and improves focus
-2. **Write clear descriptions**: Helps the AI understand when to use each function
-3. **Test plugin functionality**: Verify plugins work as expected after activation
-4. **Review periodically**: Disable unused plugins to optimize performance
-
-### Index Management
-
-1. **Organize by topic**: Create separate indexes for different knowledge domains
-2. **Keep files updated**: Remove outdated documents, add new ones regularly
-3. **Use meaningful names**: Name indexes and files descriptively
-4. **Monitor storage**: Large indexes consume more resources and cost more
-5. **Ingest regularly**: Don't let too many files accumulate in Draft status
-
-### Security
-
-1. **Use Managed Identity**: Preferred for SQL connections
-2. **Rotate secrets regularly**: Update Key Vault secrets periodically
-3. **Review access logs**: Monitor who accesses what data
-4. **Limit connection scope**: Only grant access to necessary databases/sites
+1. Check the Home health panel; most platform level problems surface there with a
+   description
+2. Refresh the browser; transient load failures usually clear
+3. Contact your administrator with the error message and the steps to reproduce
 
 ---
 
 ## Glossary
 
-- **Agent**: An AI entity that processes requests and generates responses
-- **Coordinator**: The main agent that receives user requests and may delegate to subagents
-- **Subagent**: A specialized agent focused on specific tasks
-- **Plugin**: A collection of functions that extend agent capabilities
-- **Function**: A specific capability within a plugin (e.g., query database, call API)
-- **Index**: A search-enabled knowledge base containing documents
-- **Ingestion**: The process of analyzing and indexing documents for search
-- **Token**: A unit of text (roughly 4 characters or 0.75 words)
-- **Temperature**: A setting controlling randomness in AI responses (0.0 = deterministic, 2.0 = very random)
-- **Reasoning Level**: For o1 models, controls the depth of reasoning (minimal, low, medium, high)
-- **Managed Identity**: Azure AD authentication without storing credentials
-- **MCP**: Model Context Protocol for external data sources
-- **Chunking**: Splitting documents into smaller pieces for efficient searching
-
----
+* **Agent**: a model given a job - instructions, tools, knowledge, memory and limits
+* **Agent (role chip)**: a user facing agent, i.e. one with at least one channel
+* **Sub-agent**: a helper agent owned by one parent; no channels
+* **Worker**: a standalone agent with no channels, called by other agents
+* **App**: a bespoke application registered on the platform (at most one Interface plus
+  one or more Services)
+* **MCP server**: a tool service offering typed operations to agents; not an agent
+* **Connection**: an operator created permission for one agent to use another agent or
+  tool; deny by default
+* **Channel**: a way users reach an agent (Teams, Copilot, web chat)
+* **Index**: a searchable knowledge store of ingested documents
+* **Ingestion**: processing documents into searchable, citable chunks
+* **Chunking**: how documents are split (Conceptual, Standard, Basic)
+* **Model Deployment**: the specific AI model an agent runs on, chosen from what is
+  deployed in your environment
+* **Model slot**: a named place where the platform consumes a model, set from a dropdown
+  of deployed models; the Home panel flags unset slots
+* **Blueprint**: a packaged, anonymised capability that installs or exports in one step
+* **Data Classification**: General / Confidential / Restricted; gates what an agent may
+  connect to
+* **Managed Identity**: Azure authentication without stored credentials

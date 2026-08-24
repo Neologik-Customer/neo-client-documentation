@@ -1,0 +1,186 @@
+<mxfile host="app.diagrams.net" pages="1"><diagram name="Option C — Neo Small (public)" id="{org}-opt-c">
+    <mxGraphModel dx="2343" dy="1243" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t1" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=26;fontStyle=1;fontColor=#1F2A44;" value="OPTION C — Neo Small (public, cost-optimised)" vertex="1">
+          <mxGeometry height="40" width="1000" x="40" y="16" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=14;fontColor=#5A6B8C;" value="Prepared for Example Customer (&lt;ORG&gt;) — &lt;customer-domain&gt;  ·  UK South · neo-small.bicep · {E}-{ORG}-NEOLOGIK-UKS-RG · v1.0 · July 2026" vertex="1">
+          <mxGeometry height="24" width="1100" x="40" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="tWarn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacing=8;fontSize=12;fontColor=#8A5A00;strokeColor=#E0B94F;fillColor=#FFF6DE;" value="Cost-optimised profile: PUBLIC network access (no Private Endpoints, no Bastion, no App Gateway) · public AKS · NGINX via Web App Routing add-on · ACR Standard · logs 30d · AKS start/stop automation (~65% compute saving)" vertex="1">
+          <mxGeometry height="70" width="860" x="1000" y="96" as="geometry" />
+        </mxCell>
+        <mxCell id="bExt" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#5A6B8C;strokeColor=#9AA7C7;fillColor=none;" value="EXTERNAL / INTERNET" vertex="1">
+          <mxGeometry height="160" width="920" x="40" y="96" as="geometry" />
+        </mxCell>
+        <mxCell id="uUsers" parent="1" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;shape=mxgraph.office.users.users;fillColor=#2072B8;fontSize=12;" value="{ORG} Users&lt;br&gt;(Microsoft Teams)" vertex="1">
+          <mxGeometry height="50" width="46" x="100" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="uBotC" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/Bot_Services.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Azure Bot Services ×2&lt;br&gt;botcontract{org}{env}01 · botrisk{org}{env}01" vertex="1">
+          <mxGeometry height="52" width="52" x="330" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="uGh" parent="1" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.github_code;pointerEvents=1;fontSize=12;" value="GitHub Actions&lt;br&gt;(hosted runners)" vertex="1">
+          <mxGeometry height="52" width="52" x="700" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="bSub" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#0078D4;strokeColor=#0078D4;fillColor=none;" value="AZURE SUBSCRIPTION ({ORG}) — {E}-{ORG}-NEOLOGIK-UKS-RG · UK South · PaaS: public endpoints (firewall + Entra ID / RBAC / keys in Key Vault)" vertex="1">
+          <mxGeometry height="1060" width="1840" x="40" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="bVnet" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#1F2A44;strokeColor=#5A6B8C;fillColor=#F7F9FC;" value="{e}-{org}-neologik-uks-vnet — 10.0.0.0/8 · subnets: sysnode / syspod / usernode / userpod (all → NAT Gateway) · AKS svc CIDR 10.210.0.0/16" vertex="1">
+          <mxGeometry height="500" width="900" x="70" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="cPip" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/networking/Public_IP_Addresses.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Public IP&lt;br&gt;(ingress)" vertex="1">
+          <mxGeometry height="44" width="52" x="110" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="cLb" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/networking/Load_Balancers.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Azure&lt;br&gt;Load Balancer" vertex="1">
+          <mxGeometry height="48" width="52" x="230" y="378" as="geometry" />
+        </mxCell>
+        <mxCell id="bAksC" parent="1" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;strokeColor=#B58500;strokeWidth=2;fillColor=#FFF6DE;fontColor=#7A5A00;" value="★ AKS — PUBLIC CLUSTER (aks{org}{env}01) · Free tier · Azure CNI · Workload Identity · NGINX (Web App Routing add-on)" vertex="1">
+          <mxGeometry height="230" width="840" x="100" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="iAksC" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/containers/Kubernetes_Services.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="AKS&lt;br&gt;API server: public" vertex="1">
+          <mxGeometry height="58" width="62" x="130" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="iNginxC" parent="1" style="image;sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/mscae/Load_Balancer_feature.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="NGINX Ingress&lt;br&gt;(Web App Routing)&lt;br&gt;TLS from Key Vault" vertex="1">
+          <mxGeometry height="46" width="46" x="280" y="546" as="geometry" />
+        </mxCell>
+        <mxCell id="iSysPoolC" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/compute/VM_Scale_Sets.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="systempool&lt;br&gt;(autoscale 1–4)" vertex="1">
+          <mxGeometry height="56" width="60" x="450" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="iUsrPoolC" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/compute/VM_Scale_Sets.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="userpool1 (autoscale 1–4)&lt;br&gt;Contract Agent · Risk Agent&lt;br&gt;NCE admin portal" vertex="1">
+          <mxGeometry height="56" width="60" x="630" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="iNatC" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/networking/NAT.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="NAT Gateway&lt;br&gt;natgw-neo-{org}{env}-uks-01&lt;br&gt;consistent outbound IP" vertex="1">
+          <mxGeometry height="54" width="54" x="820" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="iAuto" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/management_governance/Automation_Accounts.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Automation Account&lt;br&gt;AKS start/stop&lt;br&gt;08:00–18:00 Mon–Fri" vertex="1">
+          <mxGeometry height="52" width="52" x="580" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="bPaas" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#1F2A44;strokeColor=#9AA7C7;fillColor=#FFFFFF;" value="PaaS SERVICES — public endpoints · accessed via Entra ID / Workload Identity / Key Vault secrets" vertex="1">
+          <mxGeometry height="240" width="1370" x="70" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="cKv" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/security/Key_Vaults.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Key Vault&lt;br&gt;{e}-{org}-neologik-uks-kv&lt;br&gt;RBAC · Standard" vertex="1">
+          <mxGeometry height="56" width="56" x="110" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="cAcr" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/containers/Container_Registries.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Container Registry&lt;br&gt;cr{org}{env}01 · Standard" vertex="1">
+          <mxGeometry height="52" width="60" x="250" y="934" as="geometry" />
+        </mxCell>
+        <mxCell id="cSt" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/storage/Storage_Accounts.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Storage ×4 · ZRS&lt;br&gt;{e}{org}neologik{files,templa,&lt;br&gt;foundr,output}ukssta" vertex="1">
+          <mxGeometry height="48" width="60" x="400" y="938" as="geometry" />
+        </mxCell>
+        <mxCell id="hCosC" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B58500;strokeWidth=2;fillColor=#FFF6DE;" value="" vertex="1">
+          <mxGeometry height="126" width="130" x="530" y="912" as="geometry" />
+        </mxCell>
+        <mxCell id="cCos" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/databases/Azure_Cosmos_DB.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="★ Cosmos DB&lt;br&gt;chat history&lt;br&gt;serverless (scales to 0)" vertex="1">
+          <mxGeometry height="56" width="56" x="566" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="hSqlC" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#B58500;strokeWidth=2;fillColor=#FFF6DE;" value="" vertex="1">
+          <mxGeometry height="126" width="130" x="690" y="912" as="geometry" />
+        </mxCell>
+        <mxCell id="cSql" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/databases/SQL_Database.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="★ Azure SQL&lt;br&gt;{e}-{org}-neologik-uks-db / -sqldb&lt;br&gt;serverless 0.5–2 vCore · pause 60m" vertex="1">
+          <mxGeometry height="56" width="42" x="734" y="928" as="geometry" />
+        </mxCell>
+        <mxCell id="bIqC" parent="1" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;strokeColor=#B58500;strokeWidth=2;fillColor=#FFF6DE;fontColor=#7A5A00;" value="★ FOUNDRY IQ — knowledge &amp; agentic retrieval" vertex="1">
+          <mxGeometry height="160" width="410" x="1000" y="902" as="geometry" />
+        </mxCell>
+        <mxCell id="cSrch" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/app_services/Search_Services.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Azure AI Search · Standard&lt;br&gt;contract · risk policies ·&lt;br&gt;historical cases indexes" vertex="1">
+          <mxGeometry height="46" width="64" x="1040" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="cFnd" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/ai_machine_learning/AI_Studio.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="★ Azure AI Foundry&lt;br&gt;ais- + proj-neo-{org}{env}-uks-01&lt;br&gt;GPT + embedding model deployments" vertex="1">
+          <mxGeometry height="58" width="56" x="1240" y="934" as="geometry" />
+        </mxCell>
+        <mxCell id="eIqC" edge="1" parent="1" source="cFnd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B58500;strokeWidth=2;dashed=1;endArrow=classic;startArrow=none;" target="cSrch" value="AI Search connection">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bMonC" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#1F2A44;strokeColor=#9AA7C7;fillColor=#FFFFFF;" value="MONITORING" vertex="1">
+          <mxGeometry height="220" width="390" x="1470" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="cm1" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;image=img/lib/azure2/management_governance/Log_Analytics_Workspaces.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Log Analytics&lt;br&gt;{e}-{org}-neologik-uks-law&lt;br&gt;30d retention" vertex="1">
+          <mxGeometry height="50" width="50" x="1500" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="cm2" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;image=img/lib/azure2/devops/Application_Insights.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Application Insights&lt;br&gt;{e}-{org}-neologik-uks-ai" vertex="1">
+          <mxGeometry height="54" width="38" x="1630" y="376" as="geometry" />
+        </mxCell>
+        <mxCell id="cm3" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=10;image=img/lib/azure2/management_governance/Monitor.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Managed&lt;br&gt;Prometheus" vertex="1">
+          <mxGeometry height="50" width="50" x="1750" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="bBots" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#1F2A44;strokeColor=#9AA7C7;fillColor=#FFFFFF;" value="{ORG} BOT AGENTS (workload identities)" vertex="1">
+          <mxGeometry height="180" width="390" x="1470" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="txtBots" parent="1" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=11;fontColor=#5A6B8C;" value="&lt;b&gt;Contract Agent&lt;/b&gt; — clause analysis, compliance&lt;br&gt;/api/v4/contract/messages · idaksworkloadidcontract{org}{env}01&lt;br&gt;&lt;br&gt;&lt;b&gt;Risk Agent&lt;/b&gt; — risk assessment, mitigation&lt;br&gt;/api/v4/risk/messages · idaksworkloadidrisk{org}{env}01&lt;br&gt;&lt;br&gt;RBAC: KV Secrets User · Blob Contributor (stfiles) ·&lt;br&gt;OpenAI User · Search Index Contributor · Cosmos SQL role" vertex="1">
+          <mxGeometry height="140" width="360" x="1490" y="612" as="geometry" />
+        </mxCell>
+        <mxCell id="bLegC" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#1F2A44;strokeColor=#9AA7C7;fillColor=#FFFFFF;" value="LEGEND" vertex="1">
+          <mxGeometry height="170" width="390" x="1470" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="cl1" edge="1" parent="1" style="html=1;strokeColor=#0078D4;strokeWidth=3;endArrow=classic;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1495" y="832" as="sourcePoint" />
+            <mxPoint x="1560" y="832" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cl1t" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=11;" value="HTTPS user traffic (443)" vertex="1">
+          <mxGeometry height="24" width="270" x="1575" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="cl2" edge="1" parent="1" style="html=1;strokeColor=#82B366;strokeWidth=3;dashed=1;endArrow=classic;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1495" y="862" as="sourcePoint" />
+            <mxPoint x="1560" y="862" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cl2t" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=11;" value="Outbound via NAT Gateway (allow-list IP)" vertex="1">
+          <mxGeometry height="24" width="270" x="1575" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="cl3" edge="1" parent="1" style="html=1;strokeColor=#6C8EBF;strokeWidth=2;dashed=1;endArrow=classic;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1495" y="892" as="sourcePoint" />
+            <mxPoint x="1560" y="892" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cl3t" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=11;" value="PaaS access over public endpoint (TLS + Entra ID)" vertex="1">
+          <mxGeometry height="24" width="270" x="1575" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="cl5t" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=11;fontColor=#7A5A00;" value="★ amber = highlighted services (AKS, Foundry, Foundry IQ,&amp;nbsp;Cosmos DB&lt;br&gt;&amp;nbsp;Azure SQL)" vertex="1">
+          <mxGeometry height="36" width="360" x="1490" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="ce1" edge="1" parent="1" source="uUsers" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0078D4;strokeWidth=3;endArrow=classic;" target="uBotC" value="Teams">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce2" edge="1" parent="1" source="uBotC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0078D4;strokeWidth=3;endArrow=classic;" target="cPip" value="HTTPS 443&lt;br&gt;neologik.&lt;customer-domain&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce3" edge="1" parent="1" source="cPip" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0078D4;strokeWidth=3;endArrow=classic;" target="cLb" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce4" edge="1" parent="1" source="cLb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#0078D4;strokeWidth=3;endArrow=classic;" target="iNginxC" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce5" edge="1" parent="1" source="uGh" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9673A6;strokeWidth=3;dashed=1;endArrow=classic;" target="iAksC" value="deploy (Bicep + Helm)&lt;br&gt;public API + ACR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce6" edge="1" parent="1" source="iNatC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=3;dashed=1;endArrow=classic;entryX=0.85;entryY=1;entryDx=0;entryDy=0;" target="bExt" value="outbound">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce7" edge="1" parent="1" source="bAksC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6C8EBF;strokeWidth=3;dashed=1;endArrow=classic;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="bPaas" value="TLS + Entra ID / Workload Identity">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce8" edge="1" parent="1" source="iAuto" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9673A6;strokeWidth=2;dashed=1;endArrow=classic;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="bAksC" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bIamC" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=8;fontStyle=1;fontSize=13;fontColor=#1F2A44;strokeColor=#9AA7C7;fillColor=#FFFFFF;" value="MANAGED IDENTITIES &amp; DEPLOYMENT STORAGE" vertex="1">
+          <mxGeometry height="180" width="1790" x="70" y="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="txtIamC" parent="1" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=11;fontColor=#5A6B8C;" value="&lt;b&gt;Onboarding-created (in resource group, before deployment):&lt;/b&gt;&lt;br&gt;• neologik-script-runner-service-connection-{org}{env} — Contributor (subscription) · Key Vault Secrets Officer + Azure Bot Service Contributor (RG)&lt;br&gt;• neologik-sql-managed-identity-{org}{env} — Directory Readers (Entra ID)&lt;br&gt;&lt;br&gt;&lt;b&gt;Infrastructure (neo-small.bicep):&lt;/b&gt; idakscluster{org}{env}01 (Network Contributor) · idakskubelet{org}{env}01 (AcrPull) · idtestrunner{org}{env}01 · Web App Routing + Key Vault Secrets Provider (system-assigned)&lt;br&gt;&lt;b&gt;Workload identities (AKS OIDC-federated):&lt;/b&gt; idaksworkloadid{nce-ui, nce-api, ingest-api, file}{org}{env}01 — plus the Contract &amp;amp; Risk bot identities detailed above" vertex="1">
+          <mxGeometry height="136" width="1180" x="90" y="1198" as="geometry" />
+        </mxCell>
+        <mxCell id="iDeployStC" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=11;image=img/lib/azure2/storage/Storage_Accounts.svg;verticalLabelPosition=bottom;verticalAlign=top;" value="Deploy Storage" vertex="1">
+          <mxGeometry height="44" width="52" x="1300" y="1212" as="geometry" />
+        </mxCell>
+        <mxCell id="txtDeployStC" parent="1" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontSize=11;fontColor=#5A6B8C;" value="&lt;b&gt;Deployment storage account&lt;/b&gt; (onboarding script, not Bicep)&lt;br&gt;stneodeploy{org}{env}uks01 · Standard_LRS · StorageV2&lt;br&gt;Entra-ID auth only (shared-key &amp;amp; blob public access disabled)&lt;br&gt;Containers: certificate (client TLS PFX) · json (config) · logs&lt;br&gt;Created before the VNet exists; supplies the TLS cert&lt;br&gt;consumed at ingress deployment." vertex="1">
+          <mxGeometry height="136" width="470" x="1380" y="1198" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
