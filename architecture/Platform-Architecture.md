@@ -19,10 +19,12 @@ centrally.
 
 ## 2. Architecture at a glance
 
-The reference architecture diagram is maintained as a draw.io file alongside this
-document: [`neo-reference-architecture.drawio`](./neo-reference-architecture.drawio)
-(open at [app.diagrams.net](https://app.diagrams.net)). It has three pages, one
-per deployment option (see section 4).
+The reference architecture diagrams accompany this document, one per deployment
+option (see section 4):
+
+- [`architecture-neo-secure-agw.pdf`](./architecture-neo-secure-agw.pdf) - Neo Secure with Application Gateway
+- [`architecture-neo-secure-nginx.pdf`](./architecture-neo-secure-nginx.pdf) - Neo Secure with NGINX ingress
+- [`architecture-neo-small.pdf`](./architecture-neo-small.pdf) - Neo Small (public)
 
 **Placeholder key** (used in the diagram and this document):
 
