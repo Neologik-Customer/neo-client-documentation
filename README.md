@@ -55,6 +55,7 @@ Operational documentation for managing the Neologik AI platform on Azure. Design
 - **[Platform Architecture](./architecture/Platform-Architecture.md)** - Reference architecture, components, data stores, deployment profiles
 - **[Runbooks](./runbooks/Runbooks.md)** - Incident-response playbooks
 - **[Operational Procedures](./operational-procedures/Operational-Procedures.md)** - Routine operations, scaling, access, monitoring
+- **[Support Handbook](./support/Support-Handbook.md)** - How to raise support, hours, severity and response targets, escalation, ownership, releases, change requests, operational acceptance
 - **[Disaster Recovery Plan](./disaster-recovery/Disaster-Recovery-Plan.md)** - Strategy, RTO/RPO, scenarios, roles
 - **[Recovery Procedures](./disaster-recovery/Recovery-Procedures.md)** - Step-by-step component restores
 
