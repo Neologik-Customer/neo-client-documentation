@@ -55,6 +55,11 @@ Operational documentation for managing the Neologik AI platform on Azure. Design
 - **[Disaster Recovery Plan](./disaster-recovery/Disaster-Recovery-Plan.md)** - Strategy, RTO/RPO, scenarios, roles
 - **[Recovery Procedures](./disaster-recovery/Recovery-Procedures.md)** - Step-by-step component restores
 
+### Running Costs
+- **[Running Costs: neo-small](./running-costs/Running-Costs-neo-small.md)** - Monthly Azure cost in UK South, assumptions, spend monitoring and budgets
+- **[Running Costs: neo-secure](./running-costs/Running-Costs-neo-secure.md)** - As above, for neo-secure with Application Gateway WAF_v2
+- **[Running Costs: neo-secure with AGC](./running-costs/Running-Costs-neo-secure-AGC.md)** - As above, for neo-secure with Application Gateway for Containers
+
 ### Infrastructure & Compute
 - **[AKS Operations](./platform-operations/AKS-Operations.md)** - Kubernetes cluster management, upgrades, scaling, monitoring
 - **[Bastion](./platform-operations/Bastion.md)** - Secure VM access and session monitoring
