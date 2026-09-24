@@ -1,9 +1,5 @@
 # Neologik Platform - Support Handbook
 
-> **STATUS: DRAFT.** Generic support handbook for Neologik platform customers and
-> their service desk partners. No customer identifiers. Values marked
-> `[PLACEHOLDER]` are confirmed per engagement before issue.
-
 This handbook describes how support for a Neologik platform environment works:
 how to raise a request, when we are available, how quickly we respond, how
 incidents are escalated, what Neologik owns, and how releases and changes are
@@ -83,9 +79,9 @@ Where the customer disagrees, the customer's view of business impact prevails.
 
 | Severity | Acknowledgement | Progress updates | Resolution target |
 |---|---|---|---|
-| Sev1 | `[PLACEHOLDER, proposed 2 business hours]` | Every 2 business hours until resolved or a workaround is in place | `[PLACEHOLDER, proposed 1 business day]` (workaround) |
-| Sev2 | `[PLACEHOLDER, proposed 1 business day]` | Daily | `[PLACEHOLDER, proposed 3 business days]` |
-| Sev3 | `[PLACEHOLDER, proposed 3 business days]` | On change of status | Next scheduled release, or as agreed |
+| Sev1 | 2 business hours | Every 2 business hours until resolved or a workaround is in place | 1 business day (workaround) |
+| Sev2 | 1 business day | Daily | 3 business days |
+| Sev3 | 3 business days | On change of status | Next scheduled release, or as agreed |
 
 Acknowledgement and update targets are commitments. Resolution targets are
 targets: the platform depends on Microsoft Azure services and AI model
@@ -227,30 +223,14 @@ other request, stating the change required, the environment and any deadline.
 
 ## 8. Operational acceptance
 
-Before an environment enters support, Neologik and the customer complete and
-sign the checklist below. One record is kept per environment.
+Before an environment enters support, Neologik follows the checklist below with
+the customer. Every item is confirmed for each environment.
 
-| Item | Status | Evidence |
-|---|---|---|
-| Environment deployed on release version | | version, date |
-| Smoke test of agents and NCE tool passed | | date, tester |
-| Monitoring alerts routed to Neologik | | confirmed by Neologik |
-| Customer nominated contacts recorded by Neologik | | names, emails |
-| Support handbook issued to customer | | this handbook version |
-| Disaster Recovery Plan shared; RTO and RPO agreed | | DR plan version |
-| Tenant side responsibilities understood (Operational Procedures) | | customer confirmation |
-| Handover status | Accepted into support | date |
-
-| | Neologik | Customer |
-|---|---|---|
-| Name | | |
-| Role | | |
-| Date | | |
-
----
-
-## Change log
-
-| Version | Date | Author | Summary |
-|---|---|---|---|
-| 0.1 (draft) | 2026-08-27 | Neologik | Initial support handbook |
+- Environment deployed and available on the current release
+- Smoke test of agents and the NCE tool passed
+- Monitoring alerts routed to Neologik
+- Customer nominated contacts recorded by Neologik
+- Support handbook issued to the customer
+- Recovery objectives (RTO and RPO) agreed
+- Tenant side responsibilities confirmed with the customer's administrators
+- Environment accepted into support and the date recorded
